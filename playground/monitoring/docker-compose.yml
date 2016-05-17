@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+  riemann:
+    build: ./riemann
+    ports:
+      - "5555:5555"
+      - "5555:5555/udp"
+    links:
+      - influx
+
+  grafana:
+      image: grafana/grafana:3.0.1
+      ports:
+        - "3000:3000"
+      environment:
+        GF_SECURITY_ADMIN_PASSWORD: admin
+      links:
+        - influx
+
+  influx:
+    image: tutum/influxdb:0.9
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+    environment:
+      ADMIN_USER: root
+      INFLUXDB_INIT_PWD: root
+      PRE_CREATE_DB: "db1;db2"
